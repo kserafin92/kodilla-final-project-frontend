@@ -4,6 +4,7 @@ import com.kodilla.frontend.domain.Book;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class BookService {
 
@@ -27,6 +28,11 @@ public class BookService {
 
     public void addBook(Book book) {
         this.books.add(book);
+    }
+    public Set<Book> findByTitle(String title) {
+        return books.stream()
+                .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
+                .collect(Collectors.toSet());
     }
 
     private Set<Book> exampleData() {
