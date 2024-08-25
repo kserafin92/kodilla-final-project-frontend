@@ -1,66 +1,19 @@
 package com.kodilla.frontend;
 
-import com.kodilla.frontend.BookForm;
-import com.kodilla.frontend.domain.Book;
-import com.kodilla.frontend.service.BookService;
+
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 
-@Route
+@Route("")
 public class MainView extends VerticalLayout {
 
-    private BookService bookService = BookService.getInstance();
-    private Grid<Book> grid = new Grid<>(Book.class);
-    private TextField filter = new TextField();
-    private BookForm form = new BookForm(this);
-
-    private Button addNewBook = new Button("Add new book");
-
     public MainView() {
-        filter.setPlaceholder("Filter by title...");
-        filter.setClearButtonVisible(true);
-        filter.setValueChangeMode(ValueChangeMode.EAGER);
-        filter.addValueChangeListener(e -> update());
-        grid.setColumns("title", "author", "publicationYear", "type");
+        Button doctorButton = new Button("Doctors", e -> getUI().ifPresent(ui -> ui.navigate("doctors")));
+        Button patientButton = new Button("Patients", e -> getUI().ifPresent(ui -> ui.navigate("patients")));
+        Button appointmentButton = new Button("Appointments", e -> getUI().ifPresent(ui -> ui.navigate("appointments")));
+        Button reviewButton = new Button("Reviews", e -> getUI().ifPresent(ui -> ui.navigate("reviews")));
 
-        addNewBook.addClickListener(e -> {
-            grid.asSingleSelect().clear();
-            form.setBook(new Book());
-        });
-        HorizontalLayout toolbar = new HorizontalLayout(filter, addNewBook);
-
-        HorizontalLayout mainContent = new HorizontalLayout(grid, form);
-        mainContent.setSizeFull();
-        grid.setSizeFull();
-
-        add(toolbar, mainContent);
-        form.setBook(null);
-        setSizeFull();
-        refresh();
-
-
-        form.setBook(null);
-
-        grid.asSingleSelect().addValueChangeListener(event -> form.setBook(grid.asSingleSelect().getValue()));
-
-        addNewBook.addClickListener(e -> {
-            grid.asSingleSelect().clear();
-            form.setBook(new Book());
-        });
-
-
-    }
-
-    public void refresh() {
-        grid.setItems(bookService.getBooks());
-    }
-
-    private void update() {
-        grid.setItems(bookService.findByTitle(filter.getValue()));
+        add(doctorButton, patientButton, appointmentButton, reviewButton);
     }
 }
