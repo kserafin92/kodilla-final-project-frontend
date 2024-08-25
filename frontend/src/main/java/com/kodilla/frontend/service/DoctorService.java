@@ -12,7 +12,7 @@ import java.util.List;
 public class DoctorService {
 
     private final RestTemplate restTemplate;
-    private static final String BASE_URL = "http://localhost:8081/doctors"; // Port 8081 dla backendu
+    private static final String BASE_URL = "http://localhost:8081/doctors";
 
     public DoctorService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;

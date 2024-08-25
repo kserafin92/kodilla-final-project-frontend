@@ -1,60 +1,36 @@
 package com.kodilla.frontend.service;
 
-import com.kodilla.frontend.domain.Patient;
+import com.kodilla.frontend.dto.PatientDto;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class PatientService {
 
-    private final WebClient webClient;
+    private final RestTemplate restTemplate;
+    private static final String BASE_URL = "http://localhost:8081/patients";
 
-    public PatientService() {
-        this.webClient = WebClient.builder()
-                .baseUrl("http://localhost:8080/patients")
-                .build();
+    public PatientService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
-    public List<Patient> getAllPatients() {
-        return webClient.get()
-                .retrieve()
-                .bodyToFlux(Patient.class)
-                .collectList()
-                .block();
+    public List<PatientDto> findAll() {
+        return Arrays.asList(restTemplate.getForObject(BASE_URL, PatientDto[].class));
     }
 
-    public Patient getPatientById(Long id) {
-        return webClient.get()
-                .uri("/{id}", id)
-                .retrieve()
-                .bodyToMono(Patient.class)
-                .block();
+    public PatientDto save(PatientDto patientDto) {
+        if (patientDto.getId() == null) {
+            return restTemplate.postForObject(BASE_URL, patientDto, PatientDto.class);
+        } else {
+            restTemplate.put(BASE_URL + "/" + patientDto.getId(), patientDto);
+            return patientDto;
+        }
     }
 
-    public Patient createPatient(Patient patient) {
-        return webClient.post()
-                .bodyValue(patient)
-                .retrieve()
-                .bodyToMono(Patient.class)
-                .block();
-    }
-
-    public Patient updatePatient(Long id, Patient patient) {
-        return webClient.put()
-                .uri("/{id}", id)
-                .bodyValue(patient)
-                .retrieve()
-                .bodyToMono(Patient.class)
-                .block();
-    }
-
-    public void deletePatient(Long id) {
-        webClient.delete()
-                .uri("/{id}", id)
-                .retrieve()
-                .toBodilessEntity()
-                .block();
+    public void deleteById(Long id) {
+        restTemplate.delete(BASE_URL + "/" + id);
     }
 }
-
