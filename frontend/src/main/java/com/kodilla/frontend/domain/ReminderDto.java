@@ -1,4 +1,4 @@
-package com.kodilla.frontend.dto;
+package com.kodilla.frontend.domain;
 
 import lombok.*;
 

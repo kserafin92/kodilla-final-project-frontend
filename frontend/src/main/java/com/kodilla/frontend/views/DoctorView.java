@@ -1,6 +1,6 @@
 package com.kodilla.frontend.views;
 
-import com.kodilla.frontend.domain.Doctor;
+import com.kodilla.frontend.domain.DoctorDto;
 import com.kodilla.frontend.service.DoctorService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -8,22 +8,22 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
-import lombok.RequiredArgsConstructor;
+
 
 @Route("doctors")
+
 public class DoctorView extends VerticalLayout {
 
     private final DoctorService doctorService;
-    private final Grid<Doctor> doctorGrid = new Grid<>(Doctor.class);
+    private final Grid<DoctorDto> doctorGrid = new Grid<>(DoctorDto.class);
     private final Dialog editorDialog = new Dialog();
-    private Doctor currentDoctor;
+    private DoctorDto currentDoctor;
 
     public DoctorView(DoctorService doctorService) {
-        this.doctorService = doctorService; // Inject DoctorService
-        setSizeFull();
+        this.doctorService = doctorService;
         configureGrid();
-        add(doctorGrid, createAddButton());
         updateDoctorList();
+        add(createAddButton(), doctorGrid);
     }
 
     private void configureGrid() {
@@ -41,7 +41,7 @@ public class DoctorView extends VerticalLayout {
         return new Button("Add Doctor", click -> openEditorDialog(null));
     }
 
-    private void openEditorDialog(Doctor doctor) {
+    private void openEditorDialog(DoctorDto doctor) {
         currentDoctor = doctor;
         editorDialog.removeAll();
         TextField firstNameField = new TextField("First Name");
@@ -67,7 +67,7 @@ public class DoctorView extends VerticalLayout {
 
     private void saveDoctor(String firstName, String lastName, String specialization) {
         if (currentDoctor == null) {
-            Doctor newDoctor = Doctor.builder()
+            DoctorDto newDoctor = DoctorDto.builder()
                     .firstName(firstName)
                     .lastName(lastName)
                     .specialization(specialization)
@@ -83,7 +83,7 @@ public class DoctorView extends VerticalLayout {
         editorDialog.close();
     }
 
-    private void deleteDoctor(Doctor doctor) {
+    private void deleteDoctor(DoctorDto doctor) {
         doctorService.deleteById(doctor.getId());
         updateDoctorList();
     }

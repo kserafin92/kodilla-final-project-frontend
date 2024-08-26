@@ -1,17 +1,15 @@
-package com.kodilla.frontend.dto;
-
+package com.kodilla.frontend.domain;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AppointmentDto {
+public class ReviewDto {
     private Long id;
-    private LocalDateTime dateTime;
+    private int rating;
+    private String content;
     private Long doctorId;
     private Long patientId;
 }

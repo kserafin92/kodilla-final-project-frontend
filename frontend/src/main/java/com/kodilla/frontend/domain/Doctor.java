@@ -1,5 +1,6 @@
 package com.kodilla.frontend.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -26,10 +27,10 @@ public class Doctor {
 
     private String specialization;
 
-
+@JsonIgnore
     private List<Review> reviews = new ArrayList<>();
 
-
+@JsonIgnore
     private List<Appointment> appointments = new ArrayList<>();
 }
 

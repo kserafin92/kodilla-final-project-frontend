@@ -1,6 +1,6 @@
 package com.kodilla.frontend.service;
 
-import com.kodilla.frontend.dto.PatientDto;
+import com.kodilla.frontend.domain.PatientDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,12 +21,16 @@ public class PatientService {
         return Arrays.asList(restTemplate.getForObject(BASE_URL, PatientDto[].class));
     }
 
-    public PatientDto save(PatientDto patientDto) {
-        if (patientDto.getId() == null) {
-            return restTemplate.postForObject(BASE_URL, patientDto, PatientDto.class);
+    public PatientDto findById(Long id) {
+        return restTemplate.getForObject(BASE_URL + "/" + id, PatientDto.class);
+    }
+
+    public PatientDto save(PatientDto patient) {
+        if (patient.getId() == null) {
+            return restTemplate.postForObject(BASE_URL, patient, PatientDto.class);
         } else {
-            restTemplate.put(BASE_URL + "/" + patientDto.getId(), patientDto);
-            return patientDto;
+            restTemplate.put(BASE_URL + "/" + patient.getId(), patient);
+            return patient;
         }
     }
 

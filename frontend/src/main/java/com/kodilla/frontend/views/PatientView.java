@@ -1,6 +1,6 @@
 package com.kodilla.frontend.views;
 
-import com.kodilla.frontend.dto.PatientDto;
+import com.kodilla.frontend.domain.PatientDto;
 import com.kodilla.frontend.service.PatientService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -10,28 +10,29 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Route("patients")
 public class PatientView extends VerticalLayout {
 
     private final PatientService patientService;
     private final Grid<PatientDto> patientGrid = new Grid<>(PatientDto.class);
     private final Dialog editorDialog = new Dialog();
-    private PatientDto currentPatient;
+    private PatientDto currentPatientDto;
 
     public PatientView(PatientService patientService) {
         this.patientService = patientService;
-        setSizeFull();
         configureGrid();
-        add(patientGrid, createAddButton());
+        add(createAddButton(), patientGrid);
         updatePatientList();
     }
 
     private void configureGrid() {
         patientGrid.setColumns("id", "firstName", "lastName", "email", "phone");
 
-        patientGrid.addComponentColumn(patient -> {
-            Button editButton = new Button("Edit", click -> openEditorDialog(patient));
-            Button deleteButton = new Button("Delete", click -> deletePatient(patient));
+        patientGrid.addComponentColumn(patientDto -> {
+            Button editButton = new Button("Edit", click -> openEditorDialog(patientDto));
+            Button deleteButton = new Button("Delete", click -> deletePatient(patientDto));
             VerticalLayout buttonsLayout = new VerticalLayout(editButton, deleteButton);
             return buttonsLayout;
         }).setHeader("Actions");
@@ -41,19 +42,19 @@ public class PatientView extends VerticalLayout {
         return new Button("Add Patient", click -> openEditorDialog(null));
     }
 
-    private void openEditorDialog(PatientDto patient) {
-        currentPatient = patient;
+    private void openEditorDialog(PatientDto patientDto) {
+        currentPatientDto = patientDto;
         editorDialog.removeAll();
         TextField firstNameField = new TextField("First Name");
         TextField lastNameField = new TextField("Last Name");
         TextField emailField = new TextField("Email");
         TextField phoneField = new TextField("Phone");
 
-        if (patient != null) {
-            firstNameField.setValue(patient.getFirstName());
-            lastNameField.setValue(patient.getLastName());
-            emailField.setValue(patient.getEmail());
-            phoneField.setValue(patient.getPhone());
+        if (patientDto != null) {
+            firstNameField.setValue(patientDto.getFirstName());
+            lastNameField.setValue(patientDto.getLastName());
+            emailField.setValue(patientDto.getEmail());
+            phoneField.setValue(patientDto.getPhone());
         }
 
         Button saveButton = new Button("Save", click -> savePatient(
@@ -69,31 +70,31 @@ public class PatientView extends VerticalLayout {
     }
 
     private void savePatient(String firstName, String lastName, String email, String phone) {
-        if (currentPatient == null) {
-            PatientDto newPatient = PatientDto.builder()
-                    .firstName(firstName)
-                    .lastName(lastName)
-                    .email(email)
-                    .phone(phone)
-                    .build();
-            patientService.save(newPatient);
+        if (currentPatientDto == null) {
+            PatientDto newPatientDto = new PatientDto();
+            newPatientDto.setFirstName(firstName);
+            newPatientDto.setLastName(lastName);
+            newPatientDto.setEmail(email);
+            newPatientDto.setPhone(phone);
+            patientService.save(newPatientDto);
         } else {
-            currentPatient.setFirstName(firstName);
-            currentPatient.setLastName(lastName);
-            currentPatient.setEmail(email);
-            currentPatient.setPhone(phone);
-            patientService.save(currentPatient);
+            currentPatientDto.setFirstName(firstName);
+            currentPatientDto.setLastName(lastName);
+            currentPatientDto.setEmail(email);
+            currentPatientDto.setPhone(phone);
+            patientService.save(currentPatientDto);
         }
         updatePatientList();
         editorDialog.close();
     }
 
-    private void deletePatient(PatientDto patient) {
-        patientService.deleteById(patient.getId());
+    private void deletePatient(PatientDto patientDto) {
+        patientService.deleteById(patientDto.getId());
         updatePatientList();
     }
 
     private void updatePatientList() {
-        patientGrid.setItems(patientService.findAll());
+        List<PatientDto> patientDtos = patientService.findAll();
+        patientGrid.setItems(patientDtos);
     }
 }

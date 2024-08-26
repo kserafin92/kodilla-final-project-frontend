@@ -1,12 +1,12 @@
 package com.kodilla.frontend.service;
 
-
-import com.kodilla.frontend.domain.Doctor;
+import com.kodilla.frontend.domain.DoctorDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 public class DoctorService {
@@ -18,13 +18,18 @@ public class DoctorService {
         this.restTemplate = restTemplate;
     }
 
-    public List<Doctor> findAll() {
-        return List.of(restTemplate.getForObject(BASE_URL, Doctor[].class));
+    public Collection<DoctorDto> findAll() {
+        return Arrays.stream(restTemplate.getForObject(BASE_URL, DoctorDto[].class))
+                .collect(Collectors.toList());
     }
 
-    public Doctor save(Doctor doctor) {
+    public DoctorDto findById(Long id) {
+        return restTemplate.getForObject(BASE_URL + "/" + id, DoctorDto.class);
+    }
+
+    public DoctorDto save(DoctorDto doctor) {
         if (doctor.getId() == null) {
-            return restTemplate.postForObject(BASE_URL, doctor, Doctor.class);
+            return restTemplate.postForObject(BASE_URL, doctor, DoctorDto.class);
         } else {
             restTemplate.put(BASE_URL + "/" + doctor.getId(), doctor);
             return doctor;

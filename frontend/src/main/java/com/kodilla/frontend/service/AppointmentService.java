@@ -1,60 +1,35 @@
 package com.kodilla.frontend.service;
 
-import com.kodilla.frontend.domain.Appointment;
+import com.kodilla.frontend.domain.AppointmentDto;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.List;
 
 @Service
 public class AppointmentService {
 
-    private final WebClient webClient;
+    private final RestTemplate restTemplate;
+    private static final String BASE_URL = "http://localhost:8081/appointments";
 
-    public AppointmentService() {
-        this.webClient = WebClient.builder()
-                .baseUrl("http://localhost:8080/appointments")
-                .build();
+    public AppointmentService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
-    public List<Appointment> getAllAppointments() {
-        return webClient.get()
-                .retrieve()
-                .bodyToFlux(Appointment.class)
-                .collectList()
-                .block();
+    public List<AppointmentDto> findAll() {
+        return List.of(restTemplate.getForObject(BASE_URL, AppointmentDto[].class));
     }
 
-    public Appointment getAppointmentById(Long id) {
-        return webClient.get()
-                .uri("/{id}", id)
-                .retrieve()
-                .bodyToMono(Appointment.class)
-                .block();
+    public AppointmentDto save(AppointmentDto appointment) {
+        if (appointment.getId() == null) {
+            return restTemplate.postForObject(BASE_URL, appointment, AppointmentDto.class);
+        } else {
+            restTemplate.put(BASE_URL + "/" + appointment.getId(), appointment);
+            return appointment;
+        }
     }
 
-    public Appointment createAppointment(Appointment appointment) {
-        return webClient.post()
-                .bodyValue(appointment)
-                .retrieve()
-                .bodyToMono(Appointment.class)
-                .block();
-    }
-
-    public Appointment updateAppointment(Long id, Appointment appointment) {
-        return webClient.put()
-                .uri("/{id}", id)
-                .bodyValue(appointment)
-                .retrieve()
-                .bodyToMono(Appointment.class)
-                .block();
-    }
-
-    public void deleteAppointment(Long id) {
-        webClient.delete()
-                .uri("/{id}", id)
-                .retrieve()
-                .toBodilessEntity()
-                .block();
+    public void deleteById(Long id) {
+        restTemplate.delete(BASE_URL + "/" + id);
     }
 }
-
