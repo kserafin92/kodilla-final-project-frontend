@@ -1,4 +1,5 @@
 package com.kodilla.frontend.domain;
+
 import lombok.*;
 
 @Getter
@@ -12,4 +13,6 @@ public class ReviewDto {
     private String content;
     private Long doctorId;
     private Long patientId;
+    private String doctorLastName;
+    private String patientLastName;
 }
