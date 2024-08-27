@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,22 +14,13 @@ import java.util.List;
 @Builder
 public class Doctor {
 
-
     private Long id;
-
-
     private String firstName;
-
-
     private String lastName;
-
-
     private String specialization;
-
-@JsonIgnore
+    @JsonIgnore
     private List<Review> reviews = new ArrayList<>();
-
-@JsonIgnore
+    @JsonIgnore
     private List<Appointment> appointments = new ArrayList<>();
 }
 

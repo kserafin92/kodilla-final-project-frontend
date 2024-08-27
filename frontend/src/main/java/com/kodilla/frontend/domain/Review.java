@@ -1,7 +1,6 @@
 package com.kodilla.frontend.domain;
 
 
-
 import lombok.*;
 
 
@@ -11,16 +10,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class Review {
-
     private Long id;
-
-
     private int rating;
-
     private String content;
-
-
     private Doctor doctor;
-
     private Patient patient;
 }

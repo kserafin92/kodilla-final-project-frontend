@@ -1,6 +1,6 @@
 package com.kodilla.frontend.views;
 
-import com.kodilla.frontend.domain.DoctorDto;
+import com.kodilla.frontend.domain.dto.DoctorDto;
 import com.kodilla.frontend.service.DoctorService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -8,27 +8,20 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
-
-
 @Route("doctors")
-
 public class DoctorView extends VerticalLayout {
-
     private final DoctorService doctorService;
     private final Grid<DoctorDto> doctorGrid = new Grid<>(DoctorDto.class);
     private final Dialog editorDialog = new Dialog();
     private DoctorDto currentDoctor;
-
     public DoctorView(DoctorService doctorService) {
         this.doctorService = doctorService;
         configureGrid();
         updateDoctorList();
         add(createAddButton(), doctorGrid);
     }
-
     private void configureGrid() {
         doctorGrid.setColumns("id", "firstName", "lastName", "specialization");
-
         doctorGrid.addComponentColumn(doctor -> {
             Button editButton = new Button("Edit", click -> openEditorDialog(doctor));
             Button deleteButton = new Button("Delete", click -> deleteDoctor(doctor));
@@ -36,11 +29,9 @@ public class DoctorView extends VerticalLayout {
             return buttonsLayout;
         }).setHeader("Actions");
     }
-
     private Button createAddButton() {
         return new Button("Add Doctor", click -> openEditorDialog(null));
     }
-
     private void openEditorDialog(DoctorDto doctor) {
         currentDoctor = doctor;
         editorDialog.removeAll();
@@ -64,7 +55,6 @@ public class DoctorView extends VerticalLayout {
         editorDialog.add(firstNameField, lastNameField, specializationField, saveButton, cancelButton);
         editorDialog.open();
     }
-
     private void saveDoctor(String firstName, String lastName, String specialization) {
         if (currentDoctor == null) {
             DoctorDto newDoctor = DoctorDto.builder()
@@ -82,12 +72,10 @@ public class DoctorView extends VerticalLayout {
         updateDoctorList();
         editorDialog.close();
     }
-
     private void deleteDoctor(DoctorDto doctor) {
         doctorService.deleteById(doctor.getId());
         updateDoctorList();
     }
-
     private void updateDoctorList() {
         doctorGrid.setItems(doctorService.findAll());
     }

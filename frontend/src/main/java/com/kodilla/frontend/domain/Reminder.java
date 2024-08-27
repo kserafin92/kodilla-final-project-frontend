@@ -12,11 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class Reminder {
-
     private Long id;
-
-
     private LocalDateTime reminderTime;
-
     private Appointment appointment;
 }

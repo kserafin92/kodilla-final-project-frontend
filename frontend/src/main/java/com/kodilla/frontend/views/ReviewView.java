@@ -1,8 +1,8 @@
 package com.kodilla.frontend.views;
 
-import com.kodilla.frontend.domain.ReviewDto;
-import com.kodilla.frontend.domain.DoctorDto;
-import com.kodilla.frontend.domain.PatientDto;
+import com.kodilla.frontend.domain.dto.ReviewDto;
+import com.kodilla.frontend.domain.dto.DoctorDto;
+import com.kodilla.frontend.domain.dto.PatientDto;
 import com.kodilla.frontend.service.ReviewService;
 import com.kodilla.frontend.service.DoctorService;
 import com.kodilla.frontend.service.PatientService;
@@ -14,8 +14,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 @Route("reviews")
 public class ReviewView extends VerticalLayout {
