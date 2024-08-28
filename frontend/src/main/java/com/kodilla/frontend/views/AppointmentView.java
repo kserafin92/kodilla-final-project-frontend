@@ -1,5 +1,6 @@
 package com.kodilla.frontend.views;
 
+import com.kodilla.frontend.MainView;
 import com.kodilla.frontend.domain.dto.AppointmentDto;
 import com.kodilla.frontend.domain.dto.DoctorDto;
 import com.kodilla.frontend.domain.dto.PatientDto;
@@ -12,9 +13,11 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -36,7 +39,13 @@ public class AppointmentView extends VerticalLayout {
         this.currencyService = currencyService;
         configureGrid();
         updateAppointmentList();
-        add(createAddButton(), appointmentGrid);
+
+        RouterLink backButton = new RouterLink("Back", MainView.class);
+        backButton.getElement().getStyle().set("margin-right", "auto");
+
+        HorizontalLayout buttonsLayout = new HorizontalLayout(backButton, createAddButton());
+
+        add(buttonsLayout, appointmentGrid);
     }
     private void configureGrid() {
         appointmentGrid.removeAllColumns();

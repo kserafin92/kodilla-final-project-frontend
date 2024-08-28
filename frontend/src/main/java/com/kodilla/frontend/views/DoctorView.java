@@ -1,13 +1,17 @@
 package com.kodilla.frontend.views;
 
+import com.kodilla.frontend.MainView;
 import com.kodilla.frontend.domain.dto.DoctorDto;
 import com.kodilla.frontend.service.DoctorService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
+
 @Route("doctors")
 public class DoctorView extends VerticalLayout {
     private final DoctorService doctorService;
@@ -18,7 +22,13 @@ public class DoctorView extends VerticalLayout {
         this.doctorService = doctorService;
         configureGrid();
         updateDoctorList();
-        add(createAddButton(), doctorGrid);
+
+        RouterLink backButton = new RouterLink("Back", MainView.class);
+        backButton.getElement().getStyle().set("margin-right", "auto");
+
+        HorizontalLayout buttonsLayout = new HorizontalLayout(backButton, createAddButton());
+
+        add(buttonsLayout, doctorGrid);
     }
     private void configureGrid() {
         doctorGrid.setColumns("id", "firstName", "lastName", "specialization");
