@@ -30,7 +30,7 @@ public class ReviewService {
                 return review;
             }
         } catch (Exception e) {
-            e.printStackTrace(); // Print the exception to console for debugging
+            e.printStackTrace();
             throw new RuntimeException("Failed to save review", e);
         }
     }

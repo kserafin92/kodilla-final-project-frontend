@@ -11,6 +11,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -45,7 +46,7 @@ public class ReviewView extends VerticalLayout {
     }
 
     private void configureGrid() {
-        reviewGrid.removeAllColumns();  // Clear existing columns
+        reviewGrid.removeAllColumns();
 
         reviewGrid.addColumn(ReviewDto::getRating).setHeader("Rating");
         reviewGrid.addColumn(ReviewDto::getContent).setHeader("Content");
@@ -81,15 +82,15 @@ public class ReviewView extends VerticalLayout {
         if (review != null) {
             ratingField.setValue(String.valueOf(review.getRating()));
             contentField.setValue(review.getContent());
-            doctorComboBox.setValue(doctorService.findById(review.getDoctorId()));
-            patientComboBox.setValue(patientService.findById(review.getPatientId()));
+            doctorComboBox.setValue(review.getDoctor());
+            patientComboBox.setValue(review.getPatient());
         }
 
         Button saveButton = new Button("Save", click -> saveReview(
                 Integer.parseInt(ratingField.getValue()),
                 contentField.getValue(),
-                doctorComboBox.getValue().getId(),
-                patientComboBox.getValue().getId()
+                doctorComboBox.getValue(),
+                patientComboBox.getValue()
         ));
         Button cancelButton = new Button("Cancel", click -> editorDialog.close());
 
@@ -98,23 +99,28 @@ public class ReviewView extends VerticalLayout {
     }
 
 
-    private void saveReview(int rating, String content, Long doctorId, Long patientId) {
-        if (currentReview == null) {
+    private void saveReview(int rating, String content, DoctorDto doctor, PatientDto patient) {
+       try {
+           if (currentReview == null) {
             ReviewDto newReview = new ReviewDto();
             newReview.setRating(rating);
             newReview.setContent(content);
-            newReview.setDoctorId(doctorId);
-            newReview.setPatientId(patientId);
+            newReview.setDoctor(doctor);
+            newReview.setPatient(patient);
             reviewService.save(newReview);
         } else {
             currentReview.setRating(rating);
             currentReview.setContent(content);
-            currentReview.setDoctorId(doctorId);
-            currentReview.setPatientId(patientId);
+            currentReview.setDoctor(doctor);
+            currentReview.setPatient(patient);
             reviewService.save(currentReview);
         }
         updateReviewList();
         editorDialog.close();
+
+    }catch (Exception e) {
+        Notification.show("Failed to save the appointment." + e.getMessage(), 3000, Notification.Position.MIDDLE);
+    }
     }
 
     private void deleteReview(ReviewDto review) {

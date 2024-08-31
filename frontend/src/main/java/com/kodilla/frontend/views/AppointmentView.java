@@ -13,6 +13,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -121,7 +122,8 @@ public class AppointmentView extends VerticalLayout {
         editorDialog.open();
     }
     private void saveAppointment(LocalDateTime dateTime, DoctorDto doctor, PatientDto patient, String currency, Double price, Double pricePln) {
-        if (currentAppointment == null) {
+        try {
+            if (currentAppointment == null) {
             AppointmentDto newAppointment = AppointmentDto.builder()
                     .dateTime(dateTime)
                     .doctor(doctor)
@@ -142,6 +144,11 @@ public class AppointmentView extends VerticalLayout {
         }
         updateAppointmentList();
         editorDialog.close();
+
+    }catch (Exception e) {
+        Notification.show("Failed to save the appointment." + e.getMessage(), 3000, Notification.Position.MIDDLE);
+    }
+
     }
     private void deleteAppointment(AppointmentDto appointment) {
         appointmentService.deleteById(appointment.getId());
