@@ -68,7 +68,9 @@ public class ReviewView extends VerticalLayout {
     private void openEditorDialog(ReviewDto review) {
         currentReview = review;
         editorDialog.removeAll();
-        TextField ratingField = new TextField("Rating");
+        ComboBox<Integer> ratingComboBox = new ComboBox<>("Rating");
+        ratingComboBox.setItems(1, 2, 3, 4, 5);
+
         TextField contentField = new TextField("Content");
 
         ComboBox<DoctorDto> doctorComboBox = new ComboBox<>("Doctor");
@@ -80,21 +82,21 @@ public class ReviewView extends VerticalLayout {
         patientComboBox.setItemLabelGenerator(patient -> patient.getLastName());
 
         if (review != null) {
-            ratingField.setValue(String.valueOf(review.getRating()));
+            ratingComboBox.setValue(review.getRating());
             contentField.setValue(review.getContent());
             doctorComboBox.setValue(review.getDoctor());
             patientComboBox.setValue(review.getPatient());
         }
 
         Button saveButton = new Button("Save", click -> saveReview(
-                Integer.parseInt(ratingField.getValue()),
+                ratingComboBox.getValue(),
                 contentField.getValue(),
                 doctorComboBox.getValue(),
                 patientComboBox.getValue()
         ));
         Button cancelButton = new Button("Cancel", click -> editorDialog.close());
 
-        editorDialog.add(ratingField, contentField, doctorComboBox, patientComboBox, saveButton, cancelButton);
+        editorDialog.add(ratingComboBox, contentField, doctorComboBox, patientComboBox, saveButton, cancelButton);
         editorDialog.open();
     }
 
