@@ -1,1 +1,0 @@
-Repozytorium REST API https://github.com/kserafin92/kodilla-backend
